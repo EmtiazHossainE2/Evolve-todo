@@ -1,20 +1,72 @@
 import React, { useEffect, useState } from 'react'
 import './home.css'
-import { BiEdit } from "react-icons/bi"
-import { MdDelete, MdOutlineDoneAll } from "react-icons/md"
-import { BsFillHandThumbsUpFill } from "react-icons/bs"
 import { toast } from 'react-hot-toast'
+import { v4 as uuidv4 } from "uuid";
+import Todo from '../Todo/Todo';
 
 const Home = () => {
-  
 
+  const [todos, setTodos] = useState([])
+  const [taskName, setTaskName] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
+  const [taskId, setTaskID] = useState("")
+
+  const getData = () => {
+    const getTodo = localStorage.getItem('todos');
+    if (getTodo) {
+      setTodos(JSON.parse(getTodo))
+    }
+  }
+  useEffect(() => {
+    getData()
+  },[])
+
+  //************************************* Create task *************************************
+  const handleCreateTask = async (e) => {
+    e.preventDefault()
+    const name = taskName
+    const completed = false
+
+    let allTodo = [];
+    const prev = localStorage.getItem('todos');
+    if (prev) {
+      allTodo = JSON.parse(prev);
+    }
+
+    allTodo = [...allTodo, { id: uuidv4(), name, completed }];
+
+    localStorage.setItem('todos', JSON.stringify(allTodo));
+    toast.success(`Task Created `)
+    setTaskName("")
+    setIsEditing(false)
+
+    getData()
+
+  }
+
+
+  //************************************* delete task *************************************
+  const handleDelete = (id) => {
+    // console.log(id, 'id delete')
+
+  }
+
+
+
+  // Update task / edit task 
+  const handleUpdate = async (e) => {
+    console.log('handleUpdate');
+    e.preventDefault()
+
+  }
+  console.log(todos)
 
   return (
     <div className='task__container flex justify-center items-center h-screen'>
       <div className='task__content'>
         <h2 className='text-2xl font-bold  pb-3'>Task Manager</h2>
         <div>
-          <form className='task__content-input flex justify-center items-center pb-[10px]'>
+          <form onSubmit={isEditing ? handleUpdate : handleCreateTask} className='task__content-input flex justify-center items-center pb-[10px]'>
             <input
               type="text"
               name="taskName"
@@ -26,35 +78,10 @@ const Home = () => {
           </form>
         </div>
         <div className='task__content-allTask'>
-          {allTask?.length > 0 ? (
+          {todos?.length > 0 ? (
             <>
-              {allTask?.map((task, index) => (
-                <div key={index} className="task__content-allTask__task">
-                  <div className='text-xl font-[500]'>
-                    {task?.completed === true ? (
-                      <del>{index + 1} . {task?.name}</del>
-                    ) : (
-                      <>{index + 1} . {task?.name}</>
-                    )}
-                  </div>
-                  <div className="task__content-allTask__btn">
-                    <button
-                    // onClick={(e) => handleComplete(task)}
-                    >
-                      {task?.completed === false ? (
-                        <BsFillHandThumbsUpFill style={{ color: "red" }} />
-                      ) : (
-                        <MdOutlineDoneAll style={{ color: "green" }} />
-                      )}
-                    </button>
-                    <button
-                      // onClick={() => getSingleTask(task)}
-                    ><BiEdit /></button>
-                    <button
-                      // onClick={() => handleDelete(task?._id)}
-                    ><MdDelete /></button>
-                  </div>
-                </div>
+              {todos?.map((todo, index) => (
+                <Todo key={todo.id} todo={todo} index={index} />
               ))}
             </>
           ) : (
