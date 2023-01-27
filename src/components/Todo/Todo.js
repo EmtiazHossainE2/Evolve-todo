@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi"
 import { MdDelete, MdOutlineDoneAll } from "react-icons/md"
 import { BsFillHandThumbsUpFill } from "react-icons/bs"
 
-const Todo = ({index,todo}) => {
+const Todo = ({ index, todo, handleDelete, getSingleTodo }) => {
   return (
     <div key={index} className="task__content-allTask__task">
       <div className='text-xl font-[500]'>
@@ -24,11 +24,11 @@ const Todo = ({index,todo}) => {
           )}
         </button>
         <button
-        // onClick={() => getSingleTask(task)}
-        ><BiEdit  size={25}/></button>
+          onClick={() => getSingleTodo(todo)}
+        ><BiEdit size={25} /></button>
         <button
-        // onClick={() => handleDelete(task?._id)}
-        ><MdDelete  size={25}/></button>
+          onClick={() => handleDelete(todo?.id)}
+        ><MdDelete size={25} /></button>
       </div>
     </div>
   )

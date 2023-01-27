@@ -19,7 +19,7 @@ const Home = () => {
   }
   useEffect(() => {
     getData()
-  },[])
+  }, [])
 
   //************************************* Create task *************************************
   const handleCreateTask = async (e) => {
@@ -47,8 +47,14 @@ const Home = () => {
 
   //************************************* delete task *************************************
   const handleDelete = (id) => {
-    // console.log(id, 'id delete')
-
+    const getTodo = localStorage.getItem('todos');
+    if (getTodo) {
+      const todo = JSON.parse(getTodo);
+      const updatedTodo = todo.filter(item => item.id !== id);
+      localStorage.setItem('todos', JSON.stringify(updatedTodo));
+      toast.success(`Task Deleted `)
+    }
+    getData()
   }
 
 
@@ -81,7 +87,7 @@ const Home = () => {
           {todos?.length > 0 ? (
             <>
               {todos?.map((todo, index) => (
-                <Todo key={todo.id} todo={todo} index={index} />
+                <Todo key={todo.id} todo={todo} index={index} handleDelete={handleDelete} />
               ))}
             </>
           ) : (
