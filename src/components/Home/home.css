@@ -1,0 +1,46 @@
+
+.task__content {
+  padding: 1rem;
+  width: 30%;
+  box-shadow: #26394d 0px 10px 20px -10px;
+}
+
+
+.nameError:focus {
+  outline: none !important;
+  border: 1px solid red;
+  box-shadow: 0 0 10px #719ECE;
+}
+.disableBtn{
+  pointer-events:none;
+  background: rgb(114, 94, 94);
+  border: none;
+  padding: 8px 20px;
+  color: #fff;
+  font-weight: 600;
+}
+
+
+.task__content-allTask__task {
+  display: flex;
+  justify-content: space-between;
+  gap: 5;
+  padding: 5px 0;
+  border-bottom: 1px solid #333;
+}
+
+.task__content-allTask__btn button {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.task__content-allTask__btn button:last-child {
+  color: red;
+}
+
+/*********************************** * Media Query ********************************** */
+@media screen and (max-width:768px) {
+  .task__content {
+    width: 80%;
+  }
+}

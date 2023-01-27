@@ -1,11 +1,14 @@
-import React from 'react'
+import './App.css';
+import Home from './components/Home/Home';
+import  { Toaster } from 'react-hot-toast';
 
-const App = () => {
+function App() {
   return (
-    <main>
-      <h2 className="text-center text-red-500 text-4xl">Hello Todo</h2>
-    </main>
-  )
+    <div className="App">
+      <Toaster />
+      <Home />
+    </div>
+  );
 }
 
-export default App
+export default App;
