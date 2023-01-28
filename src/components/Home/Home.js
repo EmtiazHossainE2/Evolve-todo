@@ -57,6 +57,44 @@ const Home = () => {
     getData()
   }
 
+  // handleComplete
+  const handleComplete = (todo) => {
+    console.log(todo);
+    if (todo.completed === true) {
+      const getTodo = localStorage.getItem('todos');
+      if (getTodo) {
+        const todos = JSON.parse(getTodo);
+        const updatedTodo = todos?.map((item) => {
+          if (item.id === todo.id) {
+            item.completed = false
+            return item;
+          } else {
+            return item;
+          }
+        })
+        localStorage.setItem('todos', JSON.stringify(updatedTodo));
+        toast.success(`Task in queue `)
+      }
+      getData()
+    }
+    else if (todo.completed === false) {
+      const getTodo = localStorage.getItem('todos');
+      if (getTodo) {
+        const todos = JSON.parse(getTodo);
+        const updatedTodo = todos?.map((item) => {
+          if (item.id === todo.id) {
+            item.completed = true
+            return item;
+          } else {
+            return item;
+          }
+        })
+        localStorage.setItem('todos', JSON.stringify(updatedTodo));
+        toast.success(`Task completed `)
+      }
+      getData()
+    }
+  }
 
 
   // Update task / edit task 
@@ -65,7 +103,7 @@ const Home = () => {
     e.preventDefault()
 
   }
-  console.log(todos)
+  // console.log(todos)
 
   return (
     <div className='task__container flex justify-center items-center h-screen'>
@@ -87,7 +125,13 @@ const Home = () => {
           {todos?.length > 0 ? (
             <>
               {todos?.map((todo, index) => (
-                <Todo key={todo.id} todo={todo} index={index} handleDelete={handleDelete} />
+                <Todo
+                  key={todo.id}
+                  todo={todo}
+                  index={index}
+                  handleDelete={handleDelete}
+                  handleComplete={handleComplete}
+                />
               ))}
             </>
           ) : (
