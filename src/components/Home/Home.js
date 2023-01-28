@@ -3,19 +3,17 @@ import './home.css'
 import { toast } from 'react-hot-toast'
 import { v4 as uuidv4 } from "uuid";
 import Todo from '../Todo/Todo';
+import { getStoredTodo, storeToDb } from '../../utilities/localStore';
 
 const Home = () => {
 
   const [todos, setTodos] = useState([])
   const [taskName, setTaskName] = useState('')
   const [isEditing, setIsEditing] = useState(false)
-  const [taskId, setTaskID] = useState("")
+  const [task, setTask] = useState("")
 
   const getData = () => {
-    const getTodo = localStorage.getItem('todos');
-    if (getTodo) {
-      setTodos(JSON.parse(getTodo))
-    }
+    setTodos(getStoredTodo())
   }
   useEffect(() => {
     getData()
@@ -34,12 +32,10 @@ const Home = () => {
     }
 
     allTodo = [...allTodo, { id: uuidv4(), name, completed }];
-
-    localStorage.setItem('todos', JSON.stringify(allTodo));
+    storeToDb(allTodo)
     toast.success(`Task Created `)
     setTaskName("")
     setIsEditing(false)
-
     getData()
 
   }
@@ -47,68 +43,66 @@ const Home = () => {
 
   //************************************* delete task *************************************
   const handleDelete = (id) => {
-    const getTodo = localStorage.getItem('todos');
-    if (getTodo) {
-      const todo = JSON.parse(getTodo);
-      const updatedTodo = todo.filter(item => item.id !== id);
-      localStorage.setItem('todos', JSON.stringify(updatedTodo));
-      toast.success(`Task Deleted `)
-    }
+    const todo = getStoredTodo()
+    const updatedTodo = todo.filter(item => item.id !== id);
+    storeToDb(updatedTodo)
+    toast.success(`Task Deleted `)
+    setTaskName("")
     getData()
   }
 
-  // handleComplete
-  const handleComplete = (todo) => {
-    console.log(todo);
-    if (todo.completed === true) {
-      const getTodo = localStorage.getItem('todos');
-      if (getTodo) {
-        const todos = JSON.parse(getTodo);
-        const updatedTodo = todos?.map((item) => {
-          if (item.id === todo.id) {
-            item.completed = false
-            return item;
-          } else {
-            return item;
-          }
-        })
-        localStorage.setItem('todos', JSON.stringify(updatedTodo));
-        toast.success(`Task in queue `)
+  // common function 
+  const commonF = (todo, name, value, msg) => {
+    const todos = getStoredTodo();
+    const updatedTodo = todos?.map((item) => {
+      if (item.id === todo.id) {
+        item.name = name
+        item.completed = value
+        return item;
+      } else {
+        return item;
       }
-      getData()
+    })
+    storeToDb(updatedTodo)
+    toast.success(`Task in ${msg} `)
+    setTaskName("")
+    getData()
+  }
+
+  // handleComplete task 
+  const handleComplete = (todo) => {
+    if (todo.completed === true) {
+      commonF(todo, todo.name, false, 'queue')
     }
     else if (todo.completed === false) {
-      const getTodo = localStorage.getItem('todos');
-      if (getTodo) {
-        const todos = JSON.parse(getTodo);
-        const updatedTodo = todos?.map((item) => {
-          if (item.id === todo.id) {
-            item.completed = true
-            return item;
-          } else {
-            return item;
-          }
-        })
-        localStorage.setItem('todos', JSON.stringify(updatedTodo));
-        toast.success(`Task completed `)
-      }
-      getData()
+      commonF(todo, todo.name, true, 'completed')
     }
   }
 
+  const getSingleTodo = (todo) => {
+    setIsEditing(true)
+    setTaskName(todo?.name)
+    setTask(todo);
+  }
 
   // Update task / edit task 
   const handleUpdate = async (e) => {
-    console.log('handleUpdate');
     e.preventDefault()
-
+    commonF(task, taskName, false, 'edited')
+    setIsEditing(false)
   }
   // console.log(todos)
+  const queue = todos.filter((todo) => todo.completed === true)
+  // console.log(queue.length)
 
   return (
     <div className='task__container flex justify-center items-center h-screen'>
       <div className='task__content'>
         <h2 className='text-2xl font-bold  pb-3'>Task Manager</h2>
+        <div className="flex justify-between pb-5">
+          <p>Total Task : {todos.length}</p>
+          <p>Completed : {queue.length}</p>
+        </div>
         <div>
           <form onSubmit={isEditing ? handleUpdate : handleCreateTask} className='task__content-input flex justify-center items-center pb-[10px]'>
             <input
@@ -131,6 +125,7 @@ const Home = () => {
                   index={index}
                   handleDelete={handleDelete}
                   handleComplete={handleComplete}
+                  getSingleTodo={getSingleTodo}
                 />
               ))}
             </>
