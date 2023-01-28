@@ -92,7 +92,8 @@ const Home = () => {
     setIsEditing(false)
   }
   // console.log(todos)
-  const queue = todos?.filter((todo) => todo.completed === true)
+  const items = Object.values(getStoredTodo())
+  const queue = items?.filter((todo) => todo.completed === true)
   // console.log(queue.length)
 
   return (
