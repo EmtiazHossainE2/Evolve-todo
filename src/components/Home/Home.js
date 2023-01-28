@@ -44,7 +44,7 @@ const Home = () => {
   //************************************* delete task *************************************
   const handleDelete = (id) => {
     const todo = getStoredTodo()
-    const updatedTodo = todo.filter(item => item.id !== id);
+    const updatedTodo = todo?.filter(item => item.id !== id);
     storeToDb(updatedTodo)
     toast.success(`Task Deleted `)
     setTaskName("")
@@ -55,7 +55,7 @@ const Home = () => {
   const commonF = (todo, name, value, msg) => {
     const todos = getStoredTodo();
     const updatedTodo = todos?.map((item) => {
-      if (item.id === todo.id) {
+      if (item.id === todo?.id) {
         item.name = name
         item.completed = value
         return item;
@@ -72,10 +72,10 @@ const Home = () => {
   // handleComplete task 
   const handleComplete = (todo) => {
     if (todo.completed === true) {
-      commonF(todo, todo.name, false, 'queue')
+      commonF(todo, todo?.name, false, 'queue')
     }
     else if (todo.completed === false) {
-      commonF(todo, todo.name, true, 'completed')
+      commonF(todo, todo?.name, true, 'completed')
     }
   }
 
@@ -92,7 +92,7 @@ const Home = () => {
     setIsEditing(false)
   }
   // console.log(todos)
-  const queue = todos.filter((todo) => todo.completed === true)
+  const queue = todos?.filter((todo) => todo.completed === true)
   // console.log(queue.length)
 
   return (
@@ -100,8 +100,8 @@ const Home = () => {
       <div className='task__content'>
         <h2 className='text-2xl font-bold  pb-3'>Task Manager</h2>
         <div className="flex justify-between pb-5">
-          <p>Total Task : {todos.length}</p>
-          <p>Completed : {queue.length}</p>
+          <p>Total Task : {todos?.length}</p>
+          <p>Completed : {queue?.length}</p>
         </div>
         <div>
           <form onSubmit={isEditing ? handleUpdate : handleCreateTask} className='task__content-input flex justify-center items-center pb-[10px]'>
